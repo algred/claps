@@ -15,48 +15,42 @@ model=load('/home/grad2/shugaoma/lib/edgebox/release/models/forest/modelBsds');
 model=model.model;
 model.opts.multiscale=0; model.opts.sharpen=2; model.opts.nThreads=1;
 
-N = 100;
 IOU_thre = 0.5;
 out_path = pathstring(['/research/action_data/ucf101-edgebox']);
-for vid = 1:1 %length(video_list)
+for vid = id1:id2 %1:length(video_list)
+    if exist([out_path filesep num2str(vid) '_bboxs.mat'], 'file')
+        continue;
+    end
     frames = load([frame_path filesep num2str(vid) '_frames.mat']);
     flow = load([flow_path filesep num2str(vid) '_flow.mat']);
     flow = decompress_flow(flow.flow_int, flow.flow_frac);
     rows = size(frames.imgs, 1);
     cols = size(frames.imgs, 2);
-    nfms = size(frames.imgs, 4);
+    nfms = size(frames.imgs, 4) - 1;
     bboxes = cell(nfms, 1);
-    for j = 1:nfms
+    parfor j = 1:nfms
         % Computes foreground mask.
-        mask = compute_fgmask(frames.imgs(:, :, :, j), flow.hu, flow.hv);
+        mask = compute_fgmask(frames.imgs(:, :, :, j), ...
+            flow.hu(:, :, j), flow.hv(:, :, j));
         CC = bwconncomp(mask);
-        cc_masks = false(rows * cols, CC.NumObjects);
-        cc_sz = zeros(1, CC.NumObjects)
+        cc_bboxs = zeros(CC.NumObjects, 4);
         for k = 1:CC.NumObjects
-            cc_masks(CC.PixelIdxList{k}, k) = true;
-            cc_sz(k) = length(CC.PixelIdxList{k});
+            [y, x] = ind2sub([rows, cols], CC.PixelIdxList{k});
+            x1 = min(x); x2 = max(x);
+            y1 = min(y); y2 = max(y);
+            cc_bboxs(k, :) = [x1 y1 x2 - x1 + 1  y2 - y1 + 1];
         end
 
         % Computes bbox proposals.  
-        this_bboxs = edgeBoxes(im, model, opts);
+        this_bboxs = edgeBoxes(frames.imgs(:, :, :, j), model, opts);
 
         % Selects bboxes.
-        selected_boxes = [];
-        num_selected = 0;
-        for k = 1:size(this_bboxs, 1)
-            idx = bbox2idx(this_bboxs(k, 1:4), rows, cols));
-            IX = sum(cc_masks(idx, :), 2);
-            UX = length(idx) + cc_sz - IX;
-            IOU = IX ./ UX;
-            if any(IOU >= IOU_thre)
-                selected_boxes = [selected_boxes; this_bboxs(k, 1:4)];
-                num_selected = num_selected + 1;
-                if num_selected >= N
-                    break;
-                end
-            end
-        end
-        bboxs{j} = selected_boxes;
+        IA = rectint(this_bboxs(:, 1:4), cc_bboxs);
+        AA = -repmat(this_bboxs(:, 3) .* this_bboxs(:, 4), 1, CC.NumObjects)...
+            + repmat((cc_bboxs(:, 3) .* cc_bboxs(:, 4))', size(this_bboxs, 1), 1);
+        IOU = max(IA ./ (AA - IA), [], 2);
+        IOU = IOU(:);
+        bboxs{j} = [this_bboxs(IOU >= IOU_thre, :) IOU(IOU >= IOU_thre)];
     end
     save([out_path filesep num2str(vid) '_bboxs.mat'], 'bboxs');
 end

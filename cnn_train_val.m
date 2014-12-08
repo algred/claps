@@ -1,11 +1,32 @@
 init_ucf101;
-addpath(genpath(pathstring('Y:\tools\vlfeat-0.9.16-bin\vlfeat-0.9.16\toolbox')));
-K = 5;
+K = 1;
 N = 30;
+out_path = pathstring(['/research/action_data/ucf101-k' num2str(K)]);
 
 % Splits the training videos into training and validation set.
-load('single_frame_train_val.mat');
-out_path = pathstring(['/research/action_data/ucf101-k' num2str(K)]);
+if ~exist('train_val_split.mat', 'file')
+    train_idx = [];
+    val_idx = [];
+    for cid = 1:101
+        idx = find((class_labels == cid) & (used_for_testing ~= 1));
+        idx = idx(:);
+        gid = [video_list(idx).group_id];
+        gid = gid(:);
+        unique_gid = unique(gid);
+        val_group_num = max(1, round(length(unique_gid) / 4));
+        val_gids = unique_gid(randsample(length(unique_gid), val_group_num));
+        train_gids = setdiff(unique_gid, val_gids);
+        for i = 1:length(val_gids)
+            val_idx = [val_idx; idx(gid == val_gids(i))];
+        end
+        for i = 1:length(train_gids)
+            train_idx = [train_idx; idx(gid == train_gids(i))];
+        end
+    end
+    save('train_val_split.mat', 'train_idx', 'val_idx');
+else
+    load('train_val_split.mat');
+end
 
 % Samples N video frames from each training video.
 train_imgs = cell(1, length(train_idx));

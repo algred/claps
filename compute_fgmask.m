@@ -7,6 +7,6 @@ m = false(size(hu));
 for k = 1:max(spx(:))
     m(spx == k) = (mean(motion(spx == k)) > t);
 end
-m = bwmorph(m, 'close', 10);
+m = bwmorph(m, 'close', inf);
 end
 

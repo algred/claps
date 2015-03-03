@@ -1,9 +1,14 @@
-function images = prepare_image(im)
+function images = prepare_image(im, cropped_dim)
 % ------------------------------------------------------------------------
 d = load('/research/action_videos/shared/caffe-master/matlab/caffe/ilsvrc_2012_mean');
 IMAGE_MEAN = d.image_mean;
 IMAGE_DIM = 256;
-CROPPED_DIM = 227;
+
+if exist('cropped_dim', 'var')
+    CROPPED_DIM = cropped_dim;
+else
+    CROPPED_DIM = 227;
+end
 
 % resize to fixed input size
 im = single(im);

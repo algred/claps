@@ -27,7 +27,7 @@ for vid = id1:id2 %1:length(video_list)
     rows = size(frames.imgs, 1);
     cols = size(frames.imgs, 2);
     nfms = size(frames.imgs, 4) - 1;
-    bboxes = cell(nfms, 1);
+    bboxs = cell(nfms, 1);
     parfor j = 1:nfms
         % Computes foreground mask.
         mask = compute_fgmask(frames.imgs(:, :, :, j), ...

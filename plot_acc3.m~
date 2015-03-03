@@ -1,0 +1,23 @@
+init_ucf101;
+A0 = load('data/oxford_wframe_acc.mat');
+A1 = load('data/ucf101aug_K1_acc.mat');
+A5 = load('data/ucf101aug_K5_acc.mat');
+A10 = load('data/ucf101aug_K10_acc.mat');
+A = [A0.acc1 A1 A5 A10]; 
+for i = 1:4
+    figure;
+    if i == 4
+        class_names1 = class_names((i-1) * 25 + 1 : 101);
+        bar(A((i-1) * 25 + 1 : 101, :), 'grouped', 'Horizontal','on');
+        ylim([0, 27]);
+        set(gca, 'YTick', 1:26, 'yticklabel',class_names1);
+    else
+        class_names1 = class_names((i-1) * 25 + 1 : i * 25);
+        bar(A((i-1) * 25 + 1 : i * 25, :), 'grouped', 'Horizontal','on');
+        ylim([0, 26]);
+        set(gca, 'YTick', 1:25, 'yticklabel',class_names1);
+    end
+    set(gca, 'FontSize', 12, 'FontWeight', 'bold');
+    legend('ORG', 'AUG-1', 'AUG-5', 'AUG-10', 'Location','SouthEast');
+end
+

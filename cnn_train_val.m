@@ -1,6 +1,8 @@
 init_ucf101;
-K = 1;
-N = 30;
+% K = 1;
+% N = 30;
+K = 10;
+N = 60;
 out_path = pathstring(['/research/action_data/ucf101-k' num2str(K)]);
 
 % Splits the training videos into training and validation set.
@@ -37,7 +39,13 @@ parfor i = 1:length(train_idx)
     if nfms > N
         idx = randsample(nfms, N);
     else
-        idx = 1:nfms;
+        % idx = 1:nfms;
+        tt = floor(N / nfms);
+        idx = [];
+        for kk = 1:tt
+            idx = [idx randperm(nfms)];
+        end
+        idx = [idx(:); randsample(nfms, N - nfms * tt)];
     end
     train_imgs1 = cell(length(idx), 1);
     for j = 1:length(idx)
@@ -71,7 +79,13 @@ parfor i = 1:length(val_idx)
     if nfms > N
         idx = randsample(nfms, N);
     else
-        idx = 1:nfms;
+        %idx = 1:nfms;
+        tt = floor(N / nfms);
+        idx = [];
+        for kk = 1:tt
+            idx = [idx randperm(nfms)];
+        end
+        idx = [idx(:); randsample(nfms, N - nfms * tt)];
     end
     val_imgs1 = cell(length(idx), 1);
     for j = 1:length(idx)

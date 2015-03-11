@@ -7,6 +7,8 @@ score_path = '/research/action_videos/video_data/deepnet_ucf101';
 %     '_scores' timestamp '.mat']);
 % fprintf('%s\n', prefix);
 
+% S1 = load([score_path filesep 'verydeep_augK10all_iter60000_scores_0304.mat']); 
+% S1 = load([score_path filesep 'verydeep_K1all_iter60000_scores_0304.mat']); 
 S1 = load([score_path filesep 'verydeep_augK1all_iter80000_scores_0226.mat']); 
 % S1 = load([score_path filesep 'oxford_augK1all_scores_0226.mat']); 
 C1 = zeros(101);

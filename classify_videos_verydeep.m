@@ -3,9 +3,11 @@ init_ucf101;
 
 use_gpu = 1;
 %% Model files for VGG 16 layer model.
-model_path = ['/research/action_videos/shared/caffe-dev/models/ucf101_very_deep'];
-model_def_file = [model_path filesep 'deploy.prototxt']
-model_file = [model_path filesep 'ucf101augVGG16K1All_iter_80000.caffemodel']
+% model_path = ['/research/action_videos/shared/caffe-dev/models/ucf101_very_deep'];
+model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels'];
+model_def_file = ['caffe' filesep 'verydeep_deploy.prototxt']
+model_file = [model_path filesep 'ucf101augVGG16K10All_iter_60000.caffemodel']
+K = 10;
 
 %% Model files for oxford 2048M model.
 % model_path = ['/research/action_videos/shared/caffe-dev/models/ucf101aug_K' num2str(K)];
@@ -19,7 +21,7 @@ pred = zeros(length(video_list), 1);
 S = cell(length(video_list), 1);
 N = 20;
 for i = 1:length(video_list)
-    if used_for_testing(i) ~= 1
+    if used_for_testing(i) == 1
         continue;
     end
     
@@ -45,5 +47,5 @@ for i = 1:length(video_list)
     fprintf('VIDEO %d: label = %d, pred = %d \n', i, class_labels(i), pred(i));
 end
 save([out_path filesep 'verydeep_augK' num2str(K) ...
-    'all_iter80000_scores_0226.mat'], 'S');
+    'all_iter60000_scores_train_0305.mat'], 'S');
 

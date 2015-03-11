@@ -1,5 +1,5 @@
 init_ucf101;
-K = 1;
+K = 10;
 N = 30;
 out_path = pathstring(['/research/action_data/ucf101-k' num2str(K)]);
 

@@ -23,15 +23,32 @@ for vid = 1:length(video_list)
     nfms = size(frames.imgs, 4);
     intv = floor(nfms / sqK);
     imgs = zeros(IMG_DIM, IMG_DIM, 3, N, 'single');
-    IX = rand_idx(intv, sqK, N, nfms);
+    %IX = rand_idx(intv, sqK, N, nfms);
+    intv2 = floor(intv / 2);
+    IX1 = [intv2 intv+intv2 intv*2+intv2 intv*3+intv2];
+    IX1 = [IX1; IX1-2; IX1+2];
+    ind = 1;
+    IX = [];
+    for i = 1:3
+        for j = 1:3
+            for k = 1:3
+                for h = 1:3
+                    IX(ind, :) = [IX1(i, 1) IX1(j, 2) IX1(k, 3) IX1(h, 4)];
+                    ind = ind + 1;
+                end
+            end
+        end
+    end
+    IX = IX(1:N, :);
+
     for i = 1:N
         ix = IX(i, :);
         % Makes the image.
         for j = 1:K
             for h = 1:K
                 id = (j - 1) * K + h;
-                subim = single(imresize(frames.imgs(:, :, :, ix(id)), ...
-                    [SUB_IMG_DIM SUB_IMG_DIM], 'bilinear'));
+                subim = imresize(single(frames.imgs(:, :, :, ix(id))), ...
+                    [SUB_IMG_DIM SUB_IMG_DIM], 'bilinear');
                 imgs((j-1) * SUB_IMG_DIM + 1 : j * SUB_IMG_DIM, ...
                     (h-1) * SUB_IMG_DIM + 1 : h * SUB_IMG_DIM, :, i) = ...
                     transform_image(subim);

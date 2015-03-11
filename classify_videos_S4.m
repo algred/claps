@@ -1,5 +1,7 @@
 addpath(genpath('/research/action_videos/shared/caffe-dev/matlab'));
-init_ucf101;
+% init_ucf101;
+frame_path = '/research/action_data/ucf101-frames/';
+load('ucf101_data.mat');
 
 model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels'];
 model_def_file = ['caffe' filesep 'verydeep_deploy.prototxt']

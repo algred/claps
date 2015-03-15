@@ -10,14 +10,15 @@ matcaffe_init(1, model_def_file, model_file);
 %% Params that may need to be changed for each run.
 IMAGE_DIM = 224;
 bz = 10;
-nchs = 512;
-layer_name = 'conv5_3';
+nchs = 256;
+layer_name = 'conv3_1';
 net_name = 'ucf101vgg16K1';
 
 %% Finds top activations for each unit (i.e. CNN filter). 
 % Video frames.
 load(['data' filesep 'vframe_vis_sample.mat']);
 A = zeros(length(img_names), nchs * 2);
+
 for i = 1:bz:length(img_names)
     batch_images = zeros(IMAGE_DIM, IMAGE_DIM, 3, bz, 'single');
     for j = 1:bz
@@ -28,9 +29,9 @@ for i = 1:bz:length(img_names)
             im = cat(3, im, im, im);
         end
         im = transform_image(im);
-        im(:, :, 1) = im(:, :, 1) - 103.939;
-        im(:, :, 2) = im(:, :, 2) - 116.779;
-        im(:, :, 3) = im(:, :, 3) - 123.68;
+        im(:, :, 1) = im(:, :, 1) - single(103.939);
+        im(:, :, 2) = im(:, :, 2) - single(116.779);
+        im(:, :, 3) = im(:, :, 3) - single(123.68);
         batch_images(:, :, :, j) = im;
     end
     cnn_input = {batch_images};

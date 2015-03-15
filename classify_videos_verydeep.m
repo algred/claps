@@ -6,7 +6,7 @@ use_gpu = 1;
 % model_path = ['/research/action_videos/shared/caffe-dev/models/ucf101_very_deep'];
 model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels'];
 model_def_file = ['caffe' filesep 'verydeep_deploy.prototxt']
-model_file = [model_path filesep 'ucf101augVGG16K1All_iter_60000.caffemodel']
+model_file = [model_path filesep 'ucf101augVGG16K1All_iter_80000.caffemodel']
 K = 1;
 
 %% Model files for oxford 2048M model.

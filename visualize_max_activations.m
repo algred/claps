@@ -1,15 +1,19 @@
-load(['data' filesep 'vframe_vis_sample_k10.mat']);
-load(['data' filesep 'activation_K10_conv5_3.mat']);
-nchs = 512;
+load(['data' filesep 'vframe_vis_sample.mat']);
+% layer_name = 'conv5_3';
 rf = 211;
+prefix = 'vframe';
+net_name = 'ucf101vgg16K1';
+nchs = 512;
 stride = 16;
 map_dim = 14;
 
-K = 100;
+load(['visual_data' filesep 'activation_' prefix '_' net_name '_' layer_name]);
+
+
 img_dim = 224;
 hrf = floor(rf / 2);
 
-rfim_path = ['visualize' filesep 'ucf101_augK10vgg16All' filesep 'conv5-3'];
+rfim_path = ['visualize' filesep net_name filesep prefix filesep layer_name];
 
 if ~exist(rfim_path, 'file')
     mkdir(rfim_path);
@@ -18,6 +22,7 @@ end
 S = A(:, 1:nchs);
 [S_sorted, IX] = sort(S, 'descend');
 mean_rfim = cell(nchs, 1);
+K = 200;
 parfor i = 1:nchs
     mean_rfim{i} = zeros(rf, rf, 3);
     idx = IX(1:K, i);
@@ -31,13 +36,8 @@ parfor i = 1:nchs
         [ur, uc] = ind2sub([map_dim, map_dim], uid);
         x = (uc - 1) * stride + 1;
         y = (ur - 1) * stride + 1;
-        rfim = im(y : y + rf - 1, x : x + rf - 1, :);
+        rfim = im(x : x + rf - 1, y : y + rf - 1, :);
         mean_rfim{i} = mean_rfim{i} + rfim / K;
-%         subplot(1, 2, 1);
-%         imshow(im1);
-%         subplot(1, 2, 2);
-%         imshow(uint8(rfim));
-%         pause(0.1);
     end
     imwrite(uint8(mean_rfim{i}), [rfim_path filesep num2str(i) '.png'], 'png'); 
 end

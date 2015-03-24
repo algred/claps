@@ -1,5 +1,5 @@
-W1 = load('conv5-3-tuned-weights.mat', 'W');
-W2 = load('conv5-3-org-weights.mat', 'W');
+W1 = load('conv5-2-tuned-weights.mat', 'W');
+W2 = load('conv5-2-org-weights.mat', 'W');
 [w h z nchs] = size(W1.W{1}); 
 
 for i = 1:nchs
@@ -11,9 +11,9 @@ for i = 1:nchs
 
     D(i) =sqrt(sum((x - y) .* (x - y)));
 end
-save('conv5-3-filter-change.mat', 'D');
+save('conv5-2-filter-change.mat', 'D');
 plot(1:nchs, sort(D), 'Color', 'r', 'LineWidth', 3);
 xlabel('filter number');
 ylabel('filter change');
-title('filter changes (sorted) of conv5-3'); 
+title('filter changes (sorted) of conv5-2'); 
 

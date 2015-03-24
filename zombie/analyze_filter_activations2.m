@@ -1,4 +1,4 @@
-layer_name = 'conv5_3';
+layer_name = 'conv5_2';
 net_name = 'ucf101vgg16K1';
 
 vframe = load(['../data' filesep 'vframe_vis_sample.mat']);
@@ -14,7 +14,7 @@ end
 S_avg = S_avg';
 hold on;
 colors = {'r', 'g', 'b'};
-load('conv5-3-filter-change.mat');
+load('conv5-2-filter-change.mat');
 
 K = 4;
 thre = [0 0.075 0.125 0.25];
@@ -27,6 +27,6 @@ xlabel('#sample (in uints of 200)');
 ylabel('activation value');
 legend('filter-change < 0.075', 'filter-change < 0.125', ...
     'filter-change > 0.125'); 
-title('Activation patterns of clusters of CONV5-3');
-save('conv5-3-activations.mat', 'S_avg');
+title('Activation patterns of clusters of CONV5-2');
+save('conv5-2-activations.mat', 'S_avg');
 

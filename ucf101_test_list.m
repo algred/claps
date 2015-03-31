@@ -1,10 +1,10 @@
 init_ucf101;
-K = 10;
 N = 30;
-out_path = pathstring(['/research/action_data/ucf101-k' num2str(K)]);
+split = 3;
+out_path = pathstring(['/research/action_data/ucf101-k1']);
 
 % Samples N video frames from each testing video.
-test_idx = find(used_for_testing == 1);
+test_idx = find(used_for_testing == split);
 img_list = cell(1, length(test_idx));
 for i = 1:length(test_idx)
     vid = test_idx(i);
@@ -23,7 +23,7 @@ for i = 1:length(test_idx)
     end
     img_list1 = cell(length(idx), 1);
     for j = 1:length(idx)
-        id = idx(j) + K - 1;
+        id = idx(j);
         imname = [out_path filesep num2str(vid) filesep num2str(id) '.png'];
         img_list1{j} = sprintf('%s %d\n', imname, class_labels(vid) - 1);
     end
@@ -43,7 +43,7 @@ if ind <= length(img_list)
 end
 
 % Writes out the lists of images.
-fid = fopen(['ucf101_K' num2str(K) '_test.txt'], 'w');
+fid = fopen(['data' filesep 'ucf101_split' num2str(split) '_test.txt'], 'w');
 idx = randperm(length(img_list));
 for i = 1:length(idx)
     fprintf(fid, '%s',  img_list{idx(i)});

@@ -9,9 +9,9 @@ score_path = '/research/action_videos/video_data/deepnet_ucf101';
 
 % S1 = load([score_path filesep 'verydeep_augK10all_iter60000_scores_0304.mat']); 
 % S1 = load([score_path filesep 'verydeep_K1all_iter60000_scores_0304.mat']); 
-% S1 = load([score_path filesep 'verydeep_augK1all_iter80000_scores_0226.mat']); 
+% S1 = load(pathstring([score_path filesep 'verydeep_augK1all_iter80000_scores_0226.mat'])); 
 % S1 = load([score_path filesep 'oxford_augK1all_scores_0226.mat']); 
-S1 = load([score_path filesep 'verydeep_augK1all_modified_iter80000_scores_test_0320']);
+S1 = load([score_path filesep 'verydeep_augK1all_modified53V2_iter80000_scores_test_0327']);
 C1 = zeros(101);
 for i = 1:length(video_list)
     if used_for_testing(i) ~= 1
@@ -19,7 +19,7 @@ for i = 1:length(video_list)
     end
     s1 = S1.S{i};
    
-    [~, a1] = max(s1);
+    [~, a1] = max(s1(:, 6:end));
     a1 = a1(:); 
    
     b1 = accumarray(a1, 1);

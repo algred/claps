@@ -1,20 +1,29 @@
-% Change history: 
-% 03/15/15 -  1) Added flipping and random cropping.
-%             2) Generate data into 3 splits. 
-
 addpath('..');
 init_ucf101;
 ORG_IMG_DIM = 256;
 IMG_DIM = 224;
 IMG_DIM_DIF = ORG_IMG_DIM - IMG_DIM;
 chunk_size = 99;
-out_root = pathstring(['X:\video_data\deepnet_ucf101\fuse4_hdf5\split'...
-    num2str(split_id)]);
+img_root = pathstring('X:\image_data\ucf101_imgs_final');
+out_root = pathstring('/research/wvaction/data/image_data/hdf5_ucf101img');
+
+%% Gets the list of images.
+image_list = cell(101, 1);
+N = 500;
+L = zeros(N * 101, 1);
+for c = 1:101
+    list1 = dir([img_root filesep class_names{c} filesep '*.png']);
+    idx = datasample(1:length(list1), N);
+    offset = (c-1) * N;
+    for j = 1:N
+        image_list{offset + j} = [class_names{c} filesep list1(idx(j)).name];
+    end
+    L(offset + 1 : offset + N) = c;
+end
 
 %% Output data.
-idx = find(used_for_testing == split_id);
-n = length(idx);
-nepoch = 24;
+nepoch = 6;
+n = length(image_list);
 parfor i = 1:nepoch
     fid = fopen([out_root filesep 'epoch_' num2str(i) '.txt'], 'w');
     idx_p = randperm(n);
@@ -23,29 +32,25 @@ parfor i = 1:nepoch
     ind = 1;
     chunk_count = 1;
     for v = 1:n
-        vid = idx(idx_p(v));
-        frames = load([frame_path filesep num2str(vid) '_frames.mat']);
-        nfms = size(frames.imgs, 4);
-        intv = floor(nfms / 4);
-        IX = rand_idx(intv, 4, 1, nfms);
+        id = idx_p(v);
+        im = double(imread([img_root filesep image_list{id}]));
+        im = imresize(im, [ORG_IMG_DIM, ORG_IMG_DIM], 'bilinear');
         imgs = zeros(IMG_DIM, IMG_DIM, 12);
-        off_x = randsample(IMG_DIM_DIF, 1);
-        off_y = randsample(IMG_DIM_DIF, 1);
         flip_im = (rand(1) > 0.5);
         for k = 1:4
-            im = double(frames.imgs(:,:,:,IX(1, k)));
-            im = imresize(im, [ORG_IMG_DIM, ORG_IMG_DIM], 'bilinear');
-            im = im(off_y : off_y+IMG_DIM-1, off_x : off_x+IMG_DIM-1, :);
-            im = transform_image(im);
+            off_x = randsample(IMG_DIM_DIF, 1);
+            off_y = randsample(IMG_DIM_DIF, 1);
+            im1 = im(off_y : off_y+IMG_DIM-1, off_x : off_x+IMG_DIM-1, :);
+            im1 = transform_image(im1);
             if flip_im
-                im = im(end:-1:1, :, :);
+                im1 = im1(end:-1:1, :, :);
             end
-            imgs(:,:,(k-1)*3 + 1) = im(:,:,1) - 103.939;
-            imgs(:,:,(k-1)*3 + 2) = im(:,:,2) - 116.779;
-            imgs(:,:,(k-1)*3 + 3) = im(:,:,3) - 123.68;
+            imgs(:,:,(k-1)*3 + 1) = im1(:,:,1) - 103.939;
+            imgs(:,:,(k-1)*3 + 2) = im1(:,:,2) - 116.779;
+            imgs(:,:,(k-1)*3 + 3) = im1(:,:,3) - 123.68;
         end
         data_chunk(:,:,:,ind) = imgs;
-        label_chunk(1,1,1,ind) = class_labels(vid) - 1;
+        label_chunk(1,1,1,ind) = L(id) - 1;
 
         if ind >= chunk_size || v == n 
             h5filename = [out_root filesep num2str(i) ...

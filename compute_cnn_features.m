@@ -1,15 +1,13 @@
-% addpath(genpath('/research/action_videos/shared/caffe-dev/matlab'));
 addpath(genpath('/research/action_videos/caffe_v1.0/caffe/matlab'));
 init_ucf101;
 
 use_gpu = 1;
 %% Model files for VGG 16 layer model.
 % model_path = ['/research/action_videos/shared/caffe-dev/models/ucf101_very_deep'];
-% model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels'];
-model_path = ['/research/action_videos/caffe_v1.0/caffe/models/ucf101_very_deep'];
-model_def_file = ['caffe' filesep 'verydeep_deploy.prototxt'];
-% model_file = [model_path filesep 'ucf101augVGG16K1AllM53More_iter_80000.caffemodel']
-model_file = [model_path filesep 'ucf101augVGG16K1AllM53V2_iter_80000.caffemodel'];
+model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels'];
+% model_path = ['/research/action_videos/caffe_v1.0/caffe/models/ucf101_very_deep'];
+model_def_file = ['caffe' filesep 'verydeep_deploy_L1.prototxt']
+model_file = [model_path filesep 'ucf101augVGG16K1AllM53FC6_iter_80000.caffemodel']
 K = 1;
 
 %% Model files for oxford 2048M model.
@@ -50,5 +48,5 @@ for i = 1:length(video_list)
     fprintf('VIDEO %d: label = %d, pred = %d \n', i, class_labels(i), pred(i));
 end
 save([out_path filesep 'verydeep_augK' num2str(K) ...
-    'all_modified53V2_iter80000_scores_test_0327.mat'], 'S');
+    'all_modified53FC6_iter80000_scores_test_0326.mat'], 'S');
 

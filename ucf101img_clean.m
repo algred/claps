@@ -1,15 +1,19 @@
 % Augment the UCF101_IMG dataset by cropping.
+addpath('Y:\tools\mexopencv');
 init_ucf101;
-image_root = pathstring('X:\image_data\ucf101_imgs');
-out_root = pathstring('X:\image_data\ucf101_imgs_final');
-
-parfor i = 1:length(class_names)
+% image_root = pathstring('X:\image_data\ucf101_imgs');
+% out_root = pathstring('X:\image_data\ucf101_imgs_final');
+image_root = 'X:\new_imgs';
+out_root = 'X:\new_imgs\add';
+class_names = {'PlayingDaf'};
+offset = [96]
+for i = 1:length(class_names)
     img_list = dir([image_root filesep class_names{i}]);
     out_dir = [out_root filesep class_names{i}];
     if ~exist(out_dir, 'file')
         mkdir(out_dir);
     end
-    ind = 1;
+    ind = offset(i) + 1;
     for j = 3:length(img_list)
         try
             im = cv.imread([image_root filesep class_names{i} filesep ...

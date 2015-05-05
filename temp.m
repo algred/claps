@@ -1,13 +1,9 @@
-load('loc/trainValImgIdx.mat');
-imgnet_fnames = [];
-ind = 1;
-for i = 1:length(trainImgIdx)
-    try
-        im = imread(trainImgIdx(i).path);
-    catch
-        continue;
+imgnet = load('imgnet_imgs_select.mat');
+imgnet_flg = ones(length(imgnet.imgnet_fnames), 1);
+parfor i = 1:length(imgnet.imgnet_fnames)
+    im = imread(imgnet.imgnet_fnames{i});
+    if ndims(im) < 3 || max(im(:)) > 255
+        imgnet_flg(i) = 0;
     end
-    imgnet_fnames{ind} = trainImgIdx(i).path;
-    ind = ind + 1;
-end 
-save('imgnet_imgs.mat', 'imgnet_fnames');
+end
+save('data/imgnet_flg.mat', 'imgnet_flg');

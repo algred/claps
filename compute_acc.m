@@ -1,5 +1,7 @@
 init_ucf101;
-score_path = '/research/action_videos/video_data/deepnet_ucf101';
+% score_path = pathstring('/research/action_videos/video_data/deepnet_ucf101/caffemodels/vary');
+score_path = pathstring('X:\video_data\deepnet_ucf101\caffemodels');
+split = 1;
 % prefix = 'oxford_';
 % timestamp = '_0219';
 % K = 1;
@@ -11,15 +13,15 @@ score_path = '/research/action_videos/video_data/deepnet_ucf101';
 % S1 = load([score_path filesep 'verydeep_K1all_iter60000_scores_0304.mat']); 
 % S1 = load(pathstring([score_path filesep 'verydeep_augK1all_iter80000_scores_0226.mat'])); 
 % S1 = load([score_path filesep 'oxford_augK1all_scores_0226.mat']); 
-S1 = load([score_path filesep 'verydeep_augK1all_modified53V2_iter80000_scores_test_0327']);
+S1 = load([score_path filesep score_file]);
 C1 = zeros(101);
 for i = 1:length(video_list)
-    if used_for_testing(i) ~= 1
+    if used_for_testing(i) ~= split
         continue;
     end
     s1 = S1.S{i};
    
-    [~, a1] = max(s1(:, 6:end));
+    [~, a1] = max(s1);
     a1 = a1(:); 
    
     b1 = accumarray(a1, 1);

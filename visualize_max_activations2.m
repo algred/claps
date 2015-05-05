@@ -1,27 +1,30 @@
-vframe = load(['data' filesep 'vframe_vis_sample.mat']);
-webimg = load(['data' filesep 'webimg_vis_sample.mat']);
-imgnet = load('imgnet_imgs_select.mat');
+data_root = '/research/action_features/deepnet/data';
+visual_root = pathstring('X:\video_data\deepnet_ucf101\visual_data');
+vframe = load([data_root filesep 'vframe_vis_sample.mat']);
+webimg = load([data_root filesep 'webimg_vis_sample.mat']);
+imgnet = load([data_root filesep 'imgnet_imgs_select.mat']);
 img_names = [vframe.img_names(:); webimg.img_names(:); imgnet.imgnet_fnames(:)];
 source_id = [ones(length(vframe.img_names), 1); ...
     ones(length(webimg.img_names), 1) * 2; ...
     ones(length(imgnet.imgnet_fnames), 1) * 3];
 
-layer_name = 'conv5_2';
-rf = 175;
-net_name = 'ucf101vgg16K1';
+layer_name = 'conv5_3';
+rf = 211;
+net_name = 'vgg16M';
 nchs = 512;
 stride = 16;
 map_dim = 14;
 
-A1 = load(['visual_data' filesep 'activation_vframe_' net_name '_' layer_name]);
-A2 = load(['visual_data' filesep 'activation_webimg_' net_name '_' layer_name]);
-A3 = load(['visual_data' filesep 'activation_imgnet_' net_name '_' layer_name]);
+A1 = load([visual_root filesep 'activation_vframe_' net_name '_' layer_name]);
+A2 = load([visual_root filesep 'activation_webimg_' net_name '_' layer_name]);
+A3 = load([visual_root filesep 'activation_imgnet_' net_name '_' layer_name]);
 A = [A1.A; A2.A; A3.A];
 
 img_dim = 224;
 hrf = floor(rf / 2);
 
-rfim_path = ['visualize' filesep net_name filesep 'all' filesep layer_name];
+out_root = '/research/action_features/deepnet/visualize';
+rfim_path = [out_root filesep net_name filesep 'all' filesep layer_name];
 
 if ~exist(rfim_path, 'file')
     mkdir(rfim_path);

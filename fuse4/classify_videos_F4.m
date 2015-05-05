@@ -7,7 +7,9 @@ load('../ucf101_data.mat');
 model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels'];
 model_def_file = ['deploy.prototxt']
 % model_file = [model_path filesep 'ucf101augVGG16K1All_iter_80000.caffemodel']
-model_file = [model_path filesep 'ucf101augVGG16Fuse4V2_iter_40000.caffemodel']
+% model_file = [model_path filesep 'ucf101augVGG16Fuse4V2_iter_40000.caffemodel']
+model_file = [model_path filesep 'ucf101augVGG16Fuse4V3Split'...
+    num2str(split) '_iter_110000.caffemodel'];
 matcaffe_init(1, model_def_file, model_file);
 
 out_path = '/research/action_videos/video_data/deepnet_ucf101';
@@ -18,7 +20,7 @@ D = [0 0 0 0; 2 2 2 2; -2 -2 -2 -2; 2 2 -2 -2; ...
 N = size(D, 1);
 IMG_DIM = 224;
 for vid = 1:length(video_list)
-    if used_for_testing(vid) ~= 1
+    if used_for_testing(vid) ~= split
         continue;
     end
     frames = load([frame_path filesep num2str(vid) '_frames.mat']);
@@ -52,5 +54,7 @@ for vid = 1:length(video_list)
     fprintf('VIDEO %d: label = %d, pred = %d \n', ...
         vid, class_labels(vid), pred(vid));
 end
-save([out_path filesep 'ucf101_AUG_VGG16_F4V2_iter40000_scores_0317.mat'], 'S');
+% save([out_path filesep 'ucf101_AUG_VGG16_F4V2_iter40000_scores_0317.mat'], 'S');
+save([score_path filesep 'ucf101augVGG16Fuse4V3Split' ...
+    num2str(split) '_iter110000_scores_v2'], 'S');
 

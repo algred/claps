@@ -1,5 +1,6 @@
-W1 = load('conv5-2-tuned-weights.mat', 'W');
-W2 = load('conv5-2-org-weights.mat', 'W');
+visual_root = pathstring('X:\video_data\deepnet_ucf101\visual_data');
+W1 = load([visual_root filesep layer_name '-tuned-weights.mat']);
+W2 = load([visual_root filesep layer_name '-org-weights.mat']);
 [w h z nchs] = size(W1.W{1}); 
 
 for i = 1:nchs
@@ -11,7 +12,7 @@ for i = 1:nchs
 
     D(i) =sqrt(sum((x - y) .* (x - y)));
 end
-save('conv5-2-filter-change.mat', 'D');
+save([visual_root filesep layer_name '-filter-change.mat'], 'D');
 plot(1:nchs, sort(D), 'Color', 'r', 'LineWidth', 3);
 xlabel('filter number');
 ylabel('filter change');

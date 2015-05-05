@@ -3,11 +3,9 @@ addpath(genpath('/research/action_videos/caffe_v1.0/caffe/matlab'));
 init_ucf101;
 
 use_gpu = 1;
-%% Model files for VGG 16 layer model.
-% model_path = ['/research/action_videos/shared/caffe-dev/models/ucf101_very_deep'];
-model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels'];
-model_def_file = ['caffe' filesep 'verydeep_deploy.prototxt'];
-model_file = [model_path filesep 'ucf101augVGG16Split' num2str(split)...
+model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels/ucf'];
+model_def_file = ['caffe' filesep 'VGG_CNN_M_2048_deploy.prototxt'];
+model_file = [model_path filesep 'ucf101VGG7Split' num2str(split)...
     '_iter_80000.caffemodel'];
 
 matcaffe_init(use_gpu, model_def_file, model_file);
@@ -42,6 +40,6 @@ for i = 1:length(video_list)
     [c, pred(i)] = max(b);
     fprintf('VIDEO %d: label = %d, pred = %d \n', i, class_labels(i), pred(i));
 end
-save([out_path filesep 'ucf101vgg16Split' num2str(split) ...
+save([out_path filesep 'ucf101VGG7Split' num2str(split) ...
     '_iter80000_scores_test.mat'], 'S');
 

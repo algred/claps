@@ -1,4 +1,4 @@
-split = 1;
+split = 3;
 
 train_splits = setdiff([0:3], split);
 X = [];

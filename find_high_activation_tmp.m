@@ -6,18 +6,19 @@ visual_root = pathstring('X:\video_data\deepnet_ucf101\visual_data');
 % model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels/zombie'];
 % model_file = [model_path filesep
 % 'ucf101augVGG16K1AllM_iter_80000.caffemodel'];
-model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels/ucf'];
+model_path = ['/research/action_videos/video_data/deepnet_ucf101/caffemodels/zombie'];
 model_def_file = 'caffe/verydeep_deploy_L1.prototxt';
-model_file = [model_path filesep 'ucf101augVGG16Split1_iter_80000.caffemodel'];
+model_file = [model_path filesep 'ucf101augVGG16K1AllM53V2_iter_80000.caffemodel'];
 % model_file = '/research/action_videos/shared/caffe-dev/models/vgg_very_deep/VGG_ILSVRC_16_layers.caffemodel';
-caffe('set_device', device_id);
+caffe('set_device', 1);
 matcaffe_init(1, model_def_file, model_file);
+caffe('set_device', 1);
 %% Params that may need to be changed for each run.
 IMAGE_DIM = 224;
 bz = 10;
 nchs = 512;
 layer_name = 'conv5_3';
-net_name = 'ucf101augVGG16';
+net_name = 'ucf101augVGG16M53V2';
 
 %% Finds top activations for each unit (i.e. CNN filter). 
 % Video frames.
